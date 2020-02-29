@@ -1,0 +1,13 @@
+buildscript {
+  repositories {
+    mavenLocal()
+  }
+  dependencies {
+  }
+}
+
+apply plugin: 'java'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+
+
