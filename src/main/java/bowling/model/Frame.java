@@ -5,5 +5,9 @@ package bowling.model;
  */
 public class Frame {
 
+	 private FirstRoll firstRoll;
+	 
+	 private SecondRoll secondRoll;
+	 
 	 
 }

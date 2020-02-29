@@ -12,12 +12,12 @@ import bowling.file.ReadFile;
  */
 public class BowlingApp {
 	
-	private Logger logger = LogManager.getLogger(BowlingApp.class);
-	
 	/**
 	 * This is the stream with all the information to be processed.
 	 */
 	private String fileName;
+	
+	private Logger logger = LogManager.getLogger(BowlingApp.class);
 
 	/**
 	 * Class constructor.

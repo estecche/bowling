@@ -1,7 +1,9 @@
 package bowling.model;
 
 /**
- * This class represents the first roll for a frame.
+ * This class represents the first roll for a frame. Since there is no way
+ * for a player to hit a spare in the first roll, we are just including if it's
+ * a strike.
  */
 public final class FirstRoll extends Roll {
 	
@@ -14,7 +16,9 @@ public final class FirstRoll extends Roll {
 		return strike;
 	}
 
-	public void setStrike(boolean strike) {
-		this.strike = strike;
-	}
+	@Override
+	public void setPinsKnockedOver(int pinsKnockedOver) {
+		super.setPinsKnockedOver(pinsKnockedOver);
+		strike = true;
+	}	
 }
