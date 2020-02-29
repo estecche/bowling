@@ -9,5 +9,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 * Minimum Java 8
+* Gradle 5.2 - you can download it from here: https://gradle.org/next-steps/?version=5.2&format=all
+
 
 
