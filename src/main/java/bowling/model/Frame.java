@@ -46,12 +46,20 @@ public class Frame {
 		secondRoll.setSpare((firstRoll.getPinsKnockedOver() + pinsKnockedOver) == BowlingApp.NUMBER_OF_PINS ? true : false);
 	}
 	
+	public FirstRoll getFirstRoll() {
+		return firstRoll;
+	}
+
 	public int getNumber() {
 		return number;
 	}
 
 	public int getScore() {
 		return score;
+	}
+
+	public SecondRoll getSecondRoll() {
+		return secondRoll;
 	}
 	
 	public void setScore(int score) {

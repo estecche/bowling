@@ -1,8 +1,9 @@
 package bowling.file;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,11 +32,10 @@ public class ReadFile {
 	/**
 	 * Method to read the file and return the stream.
 	 */
-	public InputStream readFile() {
+	public Stream<String> readFile() {
 		try {
-			FileInputStream inputStream = new FileInputStream(fileName);
-			return inputStream;
-		} catch (FileNotFoundException e) {
+			return Files.lines(Paths.get(fileName));
+		} catch (IOException e) {
 			logger.error("The file {} can't be read! Please double check the path and name of the file!", fileName);
 			return null;
 		}

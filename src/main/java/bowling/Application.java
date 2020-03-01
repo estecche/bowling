@@ -19,7 +19,8 @@ public class Application {
 			System.exit(1);
 		}
 		logger.warn("### Initiating the application... reading the file {}", args[0]);
+		
 		BowlingApp bowlingApp = new BowlingApp(args[0]);
-		bowlingApp.showScoringTable();
+		bowlingApp.getScoringTable();
 	}
 }
