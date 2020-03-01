@@ -68,47 +68,38 @@ public class BowlingApp {
 		frame.addFirstRollPins(singleLineData.getPinsKnockedOver());
 	}
 	
+	private Line createLine(SingleLineData singleLineData) {
+		Line line = new Line(singleLineData.getPlayerName());
+		lstLines.put(singleLineData.getPlayerName(), line);
+		return line;
+	}
+	
 	public void generateFrames(ScoresDataSource scoresDS) {
-		int frameNumber = 0;
-		int playerNumber = 1;
+		int frameNumber = 1;
 		
 		for (int i = 0; i < scoresDS.getLstScores().size(); i++) {
 			SingleLineData singleLineData = scoresDS.getLstScores().get(i);
 			
 			Line line = lstLines.get(singleLineData.getPlayerName());
-			if (line == null) {
-				line = new Line(singleLineData.getPlayerName());
-				lstLines.put(singleLineData.getPlayerName(), line);
-			}
-			
-			if (playerNumber == 1)
-				frameNumber++;
+			if (line == null)
+				line = createLine(singleLineData);
 			
 			Frame frame = line.getFrame(frameNumber);
 			
 			if (frame != null && ((frame.getFirstRoll() != null && frame.getFirstRoll().isStrike())
 					|| (frame.getFirstRoll() != null && frame.getSecondRoll() != null))) {
-				playerNumber = 1;
+				//This means that the player we've got is an existing one and the roll belongs to the next frame.
 				frameNumber++;
 				frame = line.getFrame(frameNumber);
 			}
 			
 			if (frame == null) {
-				createFrame(frameNumber, line, singleLineData);
-				
-				if (line.getFrame(frameNumber).getFirstRoll().isStrike()) {
-					playerNumber++;
-				}
-				
+				createFrame(frameNumber, line, singleLineData);				
 				continue;
 			}
 			
-			if (frame.getSecondRoll() == null) {
+			if (frame.getSecondRoll() == null)
 				frame.addSecondRollPins(singleLineData.getPinsKnockedOver());
-				playerNumber++;
-			} else {
-				playerNumber = 1;
-			}
 			
 			//QQQ remember that the 10th frame is very different.
 		}
