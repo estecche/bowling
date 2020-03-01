@@ -3,6 +3,8 @@ package bowling;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import bowling.file.ProcessStream;
+
 /**
  * Main application.
  */
@@ -20,7 +22,11 @@ public class Application {
 		}
 		logger.warn("### Initiating the application... reading the file {}", args[0]);
 		
-		BowlingApp bowlingApp = new BowlingApp(args[0]);
-		bowlingApp.getScoringTable();
+		ProcessStream processStream = new ProcessStream(args[0]);
+		
+		BowlingApp bowlingApp = new BowlingApp(processStream.extractData());
+		if (bowlingApp.generateScoringTable()) {
+			new RenderBowlingInfo(bowlingApp.getLstLines()).render();
+		}
 	}
 }

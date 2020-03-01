@@ -45,8 +45,10 @@ public class ProcessStream {
 		logger.info("Processing line \"{}\" ...", line);
 		StringTokenizer strToken = new StringTokenizer(line, "\t");
 
-		if (!strToken.hasMoreElements())
+		if (!strToken.hasMoreElements()) {
+			scoreDS.addNewLine("INVALID PLAYER", "-1");
 			return false;
+		}
 
 		try {
 			scoreDS.addNewLine((String) strToken.nextElement(), (String) strToken.nextElement());
