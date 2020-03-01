@@ -10,11 +10,21 @@ public abstract class Roll {
 	 */
 	private int pinsKnockedOver;
 
+	/**
+	 * Class constructor.
+	 * 
+	 * @param pinsKnockedOver The number of pins knocked over.
+	 */
+	public Roll(int pinsKnockedOver) {
+		this.pinsKnockedOver = pinsKnockedOver;
+		setPinsKnockedOver(pinsKnockedOver);
+	}
+	
 	public int getPinsKnockedOver() {
 		return pinsKnockedOver;
 	}
 
-	public void setPinsKnockedOver(int pinsKnockedOver) {
+	void setPinsKnockedOver(int pinsKnockedOver) {
 		this.pinsKnockedOver = pinsKnockedOver;
 	}
 }

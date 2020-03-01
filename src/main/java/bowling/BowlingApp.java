@@ -13,6 +13,16 @@ import bowling.file.ReadFile;
 public class BowlingApp {
 	
 	/**
+	 * The number of frames allowed in a game.
+	 */
+	public static int NUMBER_OF_FRAMES = 10;
+	
+	/**
+	 * The number of pins allowed in a game.
+	 */
+	public static int NUMBER_OF_PINS = 10;
+	
+	/**
 	 * This is the stream with all the information to be processed.
 	 */
 	private String fileName;

@@ -11,7 +11,20 @@ public class SecondRoll extends Roll {
 	 */
 	private boolean spare;
 
+	/**
+	 * Class constructor.
+	 * 
+	 * @param pinsKnockedOver The pins knocked over.
+	 */
+	public SecondRoll(int pinsKnockedOver) {
+		super(pinsKnockedOver);
+	}
+	
 	public boolean isSpare() {
 		return spare;
+	}
+
+	public void setSpare(boolean spare) {
+		this.spare = spare;
 	}
 }
