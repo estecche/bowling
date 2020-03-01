@@ -3,6 +3,7 @@ package bowling;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import bowling.exceptions.ErrorCodes;
 import bowling.file.ProcessStream;
 
 /**
@@ -17,7 +18,7 @@ public class Application {
 	
 	public static void main(String[] args) {
 		if (args.length == 0) {
-			logger.warn("### Score file not detected! Please include the name of the file with all the scores!");
+			logger.error(ErrorCodes.NO_SCORE_FILE.getMessage());
 			System.exit(1);
 		}
 		logger.warn("### Initiating the application... reading the file {}", args[0]);

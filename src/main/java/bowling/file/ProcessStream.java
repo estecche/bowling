@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import bowling.exceptions.ErrorCodes;
 import bowling.source.ScoresDataSource;
 
 /**
@@ -42,7 +43,6 @@ public class ProcessStream {
 	 * @param scoreDS The list to put all the info in.
 	 */
 	private boolean createNewDS(String line, ScoresDataSource scoreDS) {
-		logger.info("Processing line \"{}\" ...", line);
 		StringTokenizer strToken = new StringTokenizer(line, "\t");
 
 		if (!strToken.hasMoreElements()) {
@@ -54,7 +54,7 @@ public class ProcessStream {
 			scoreDS.addNewLine((String) strToken.nextElement(), (String) strToken.nextElement());
 			return true;
 		} catch (Exception e) {
-			logger.error("An error ocurred while processing the line...");
+			logger.error(ErrorCodes.WRONG_LINE_DATA.getMessage());
 			return false;
 		}
 	}

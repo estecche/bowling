@@ -31,6 +31,8 @@ public class ReadFile {
 	
 	/**
 	 * Method to read the file and return the stream.
+	 * 
+	 * @return A stream with all the lines as strings.
 	 */
 	public Stream<String> readFile() {
 		try {

@@ -16,6 +16,12 @@ dependencies {
 	testImplementation 'junit:junit:4.12'
 }
 
+javadoc {
+	source = sourceSets.main.allJava
+	classpath = configurations.compile
+	destinationDir = file("./documentation/javadoc")
+}
+
 jar {
 	manifest {
 		attributes("Main-Class": "bowling.Application", "Implementation-Version": version)
