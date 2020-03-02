@@ -1,7 +1,6 @@
 package bowling;
 
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +18,11 @@ import bowling.source.SingleLineData;
 public class BowlingApp {
 
 	/**
+	 * The number of points awarded per spare.
+	 */
+	public static int ADDITIONAL_POINTS = 10;
+
+	/**
 	 * Attribute that defines the number of frames allowed in a game.
 	 */
 	public static int NUMBER_OF_FRAMES = 10;
@@ -31,7 +35,8 @@ public class BowlingApp {
 	private Logger logger = LogManager.getLogger(BowlingApp.class);
 
 	/**
-	 * These are the lines in a single bowling match.
+	 * These are the lines in a single bowling match. The key for each line is the
+	 * player name.
 	 */
 	private HashMap<String, Line> lstLines;
 
@@ -100,7 +105,8 @@ public class BowlingApp {
 			Frame frame = line.getFrame(frameNumber);
 
 			if (frame != null && frameNumber == BowlingApp.NUMBER_OF_FRAMES) {
-				if (frame.getSecondRoll() != null && (frame.getFirstRoll().isStrike() || frame.getSecondRoll().isSpare())) {
+				if (frame.getSecondRoll() != null
+						&& (frame.getFirstRoll().isStrike() || frame.getSecondRoll().isSpare())) {
 					((SpecialFrame) frame).addThirdRollPins(singleLineData.getPinsKnockedOver());
 					continue;
 				}
@@ -109,16 +115,62 @@ public class BowlingApp {
 				frameNumber++;
 				frame = line.getFrame(frameNumber);
 			}
-			
+
 			if (frame == null) {
 				createFrame(frameNumber, line, singleLineData);
 				continue;
 			}
 
+			// QQQ we are missing here when the 10th frames, all three are strikes. Also it
+			// can be a strike
+			// and then a spare (two more shots).
 			if (frame.getSecondRoll() == null)
 				frame.addSecondRollPins(singleLineData.getPinsKnockedOver());
 		}
 		return true;
+	}
+
+	public void generateScores() {
+		for (String playerName : lstLines.keySet()) {
+			Line line = lstLines.get(playerName);
+
+			for (int i = 1; i <= BowlingApp.NUMBER_OF_FRAMES; i++) {
+				Frame frame = line.getFrame(i);
+				int previousScore = (i == 1) ? 0 : line.getFrame(i - 1).getScore();
+
+				Frame nextFrame = line.getFrame(i + 1);
+				Frame nextTwoFrames = line.getFrame(i + 2);
+
+				if (frame.getFirstRoll().isStrike()) {
+					if (nextFrame.getFirstRoll().isStrike() && nextTwoFrames.getFirstRoll().isStrike()) {
+						frame.setScore((ADDITIONAL_POINTS * 3) + previousScore);
+						continue;
+					}
+
+					if (nextFrame.getSecondRoll().isSpare()) {
+						frame.setScore((ADDITIONAL_POINTS * 2) + previousScore);
+						continue;
+					}
+
+					frame.setScore(ADDITIONAL_POINTS + previousScore + nextFrame.getFirstRoll().getPinsKnockedOver()
+							+ nextFrame.getSecondRoll().getPinsKnockedOver());
+					continue;
+				}
+
+				if (frame.getSecondRoll().isSpare()) {
+					if (nextFrame.getFirstRoll().isStrike()) {
+						frame.setScore(previousScore + ADDITIONAL_POINTS + ADDITIONAL_POINTS);
+						continue;
+					}
+
+					frame.setScore(previousScore + ADDITIONAL_POINTS + nextFrame.getFirstRoll().getPinsKnockedOver());
+					continue;
+				}
+
+				frame.setScore(previousScore + frame.getFirstRoll().getPinsKnockedOver()
+						+ frame.getSecondRoll().getPinsKnockedOver());
+			}
+		}
 	}
 
 	/**
@@ -133,11 +185,15 @@ public class BowlingApp {
 		}
 
 		if (scoresDS.getLstScores().size() < (BowlingApp.NUMBER_OF_FRAMES * 2)) {
-			logger.error("### There is less data than the expected! Please check the data source!");
+			logger.error(ErrorCodes.MORE_DATA_EXPECTED.getMessage());
 			return false;
 		}
 
-		return generateFrames();
+		if (!generateFrames())
+			return false;
+
+		generateScores();
+		return true;
 	}
 
 	/**

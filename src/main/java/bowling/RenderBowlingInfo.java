@@ -48,10 +48,11 @@ public class RenderBowlingInfo {
 			}
 			
 			SpecialFrame frame = (SpecialFrame) line.getFrame(10);
-			logger.info("Player: {} - Frame {} - pins: {} / {}, {}", line.getPlayerName(), frame.getNumber(),
+			logger.info("Player: {} - Frame {} - pins: {} / {}, {} score = {}", line.getPlayerName(), frame.getNumber(),
 					frame.getFirstRoll().getPinsKnockedOver(),
 					(frame.getSecondRoll() == null ? 0 : frame.getSecondRoll().getPinsKnockedOver()),
-					(frame.getAdditionalRoll() == null ? "" : frame.getAdditionalRoll().getPinsKnockedOver()));
+					(frame.getAdditionalRoll() == null ? "" : frame.getAdditionalRoll().getPinsKnockedOver()),
+					frame.getScore());
 		}
 	}
 }
