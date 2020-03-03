@@ -107,7 +107,7 @@ public class BowlingApp {
 			if (frame != null && frameNumber == BowlingApp.NUMBER_OF_FRAMES) {
 				if (frame.getSecondRoll() != null
 						&& (frame.getFirstRoll().isStrike() || frame.getSecondRoll().isSpare())) {
-					((SpecialFrame) frame).addThirdRollPins(singleLineData.getPinsKnockedOver());
+					((SpecialFrame) frame).addThirdRoll(singleLineData.getPinsKnockedOver());
 					continue;
 				}
 			} else if (frame != null && ((frame.getFirstRoll() != null && frame.getFirstRoll().isStrike())
@@ -121,29 +121,34 @@ public class BowlingApp {
 				continue;
 			}
 
-			// QQQ we are missing here when the 10th frames, all three are strikes. Also it
-			// can be a strike
-			// and then a spare (two more shots).
 			if (frame.getSecondRoll() == null)
 				frame.addSecondRollPins(singleLineData.getPinsKnockedOver());
 		}
 		return true;
 	}
 
+	/**
+	 * Method that generates the scores per each frame for all the players.
+	 */
 	public void generateScores() {
 		for (String playerName : lstLines.keySet()) {
 			Line line = lstLines.get(playerName);
 
-			for (int i = 1; i <= BowlingApp.NUMBER_OF_FRAMES; i++) {
+			for (int i = 1; i <= 8; i++) {
 				Frame frame = line.getFrame(i);
 				int previousScore = (i == 1) ? 0 : line.getFrame(i - 1).getScore();
 
 				Frame nextFrame = line.getFrame(i + 1);
 				Frame nextTwoFrames = line.getFrame(i + 2);
-
+				
 				if (frame.getFirstRoll().isStrike()) {
-					if (nextFrame.getFirstRoll().isStrike() && nextTwoFrames.getFirstRoll().isStrike()) {
-						frame.setScore((ADDITIONAL_POINTS * 3) + previousScore);
+					if (nextFrame.getFirstRoll().isStrike()) {
+						if (nextTwoFrames.getFirstRoll().isStrike()) {
+							frame.setScore((ADDITIONAL_POINTS * 3) + previousScore);
+							continue;
+						}
+						frame.setScore(ADDITIONAL_POINTS * 2 + nextTwoFrames.getFirstRoll().getPinsKnockedOver()
+								+ previousScore);
 						continue;
 					}
 
@@ -171,6 +176,7 @@ public class BowlingApp {
 						+ frame.getSecondRoll().getPinsKnockedOver());
 			}
 		}
+
 	}
 
 	/**
