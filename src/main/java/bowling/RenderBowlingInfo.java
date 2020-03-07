@@ -18,7 +18,7 @@ public class RenderBowlingInfo {
 	/**
 	 * This defines the separator to be used when printing the scores.
 	 */
-	private final String SEPARATOR = "\t";
+	private final String SEPARATOR = "  |  ";
 
 	private final String DOUBLE_SEPARATOR = SEPARATOR + SEPARATOR;
 
@@ -66,7 +66,7 @@ public class RenderBowlingInfo {
 			String frameInfo = "Pinfalls" + SEPARATOR;
 			String scoreInfo = "Score" + SEPARATOR;
 
-			for (int i = 1; i <= 9; i++) {
+			for (int i = 1; i <= 10; i++) {
 				Frame frame = line.getFrame(i);
 				if (frame == null)
 					break;

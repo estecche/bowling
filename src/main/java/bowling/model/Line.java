@@ -54,7 +54,7 @@ public class Line {
 	
 	public boolean isNextTwoFramesStrike(Frame frame, int i) {
 		if (frame.getNumber() <= 8)
-			return ((SpecialFrame) getFrame(i + 2)).isFirstRollStrike();
+			return getFrame(i + 2).isFirstRollStrike();
 		if (frame.getNumber() == 9)
 			return ((SpecialFrame) getFrame(10)).isSecondRollStrike();
 		return ((SpecialFrame) getFrame(10)).isThirdRollStrike();
