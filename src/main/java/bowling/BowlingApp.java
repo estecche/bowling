@@ -141,8 +141,8 @@ public class BowlingApp {
 				Frame nextTwoFrames = line.getFrame(i + 2);
 				
 				if (frame.isFirstRollStrike()) {
-					if (nextFrame.isFirstRollStrike()) {
-						if (nextTwoFrames.isFirstRollStrike()) {
+					if (isNextFrameStrike(line, frame, i)) {
+						if (isNextTwoFramesStrike(line, frame, i)) {
 							frame.setScore((ADDITIONAL_POINTS * 3) + previousScore);
 							continue;
 						}
@@ -175,7 +175,21 @@ public class BowlingApp {
 						+ frame.getSecondPinsKnockedOver());
 			}
 		}
-
+	}
+	
+	private boolean isNextFrameStrike(Line line, Frame frame, int i) {
+		if (frame.getNumber() <= 9) {
+			return line.getFrame(i + 1).isFirstRollStrike();
+		}
+		return ((SpecialFrame) line.getFrame(10)).isSecondRollStrike();
+	}
+	
+	private boolean isNextTwoFramesStrike(Line line, Frame frame, int i) {
+		if (frame.getNumber() <= 8)
+			return ((SpecialFrame) line.getFrame(i + 2)).isFirstRollStrike();
+		if (frame.getNumber() == 9)
+			return ((SpecialFrame) line.getFrame(10)).isSecondRollStrike();
+		return ((SpecialFrame) line.getFrame(10)).isThirdRollStrike();
 	}
 
 	/**
