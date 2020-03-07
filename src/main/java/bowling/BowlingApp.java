@@ -67,7 +67,7 @@ public class BowlingApp {
 	private void createFrame(int frameNumber, Line line, SingleLineData singleLineData) {
 		Frame frame = (frameNumber == BowlingApp.NUMBER_OF_FRAMES) ? new SpecialFrame() : new Frame(frameNumber);
 		line.addFrame(frame);
-		frame.addFirstRollPins(singleLineData.getPinsKnockedOver());
+		frame.addFirstRoll(singleLineData.getPinsKnockedOver());
 	}
 
 	/**
@@ -105,13 +105,12 @@ public class BowlingApp {
 			Frame frame = line.getFrame(frameNumber);
 
 			if (frame != null && frameNumber == BowlingApp.NUMBER_OF_FRAMES) {
-				if (frame.getSecondRoll() != null
-						&& (frame.getFirstRoll().isStrike() || frame.getSecondRoll().isSpare())) {
+				if (frame.secondRollExists() && (frame.isFirstRollStrike() || frame.isSpare())) {
 					((SpecialFrame) frame).addThirdRoll(singleLineData.getPinsKnockedOver());
 					continue;
 				}
-			} else if (frame != null && ((frame.getFirstRoll() != null && frame.getFirstRoll().isStrike())
-					|| (frame.getFirstRoll() != null && frame.getSecondRoll() != null))) {
+			} else if (frame != null && ((frame.firstRollExists() && frame.isFirstRollStrike())
+					|| (frame.firstRollExists() && frame.secondRollExists()))) {
 				frameNumber++;
 				frame = line.getFrame(frameNumber);
 			}
@@ -121,8 +120,8 @@ public class BowlingApp {
 				continue;
 			}
 
-			if (frame.getSecondRoll() == null)
-				frame.addSecondRollPins(singleLineData.getPinsKnockedOver());
+			if (!frame.secondRollExists())
+				frame.addSecondRoll(singleLineData.getPinsKnockedOver());
 		}
 		return true;
 	}
@@ -141,39 +140,39 @@ public class BowlingApp {
 				Frame nextFrame = line.getFrame(i + 1);
 				Frame nextTwoFrames = line.getFrame(i + 2);
 				
-				if (frame.getFirstRoll().isStrike()) {
-					if (nextFrame.getFirstRoll().isStrike()) {
-						if (nextTwoFrames.getFirstRoll().isStrike()) {
+				if (frame.isFirstRollStrike()) {
+					if (nextFrame.isFirstRollStrike()) {
+						if (nextTwoFrames.isFirstRollStrike()) {
 							frame.setScore((ADDITIONAL_POINTS * 3) + previousScore);
 							continue;
 						}
-						frame.setScore(ADDITIONAL_POINTS * 2 + nextTwoFrames.getFirstRoll().getPinsKnockedOver()
+						frame.setScore(ADDITIONAL_POINTS * 2 + nextTwoFrames.getFirstPinsKnockedOver()
 								+ previousScore);
 						continue;
 					}
 
-					if (nextFrame.getSecondRoll().isSpare()) {
+					if (nextFrame.isSpare()) {
 						frame.setScore((ADDITIONAL_POINTS * 2) + previousScore);
 						continue;
 					}
 
-					frame.setScore(ADDITIONAL_POINTS + previousScore + nextFrame.getFirstRoll().getPinsKnockedOver()
-							+ nextFrame.getSecondRoll().getPinsKnockedOver());
+					frame.setScore(ADDITIONAL_POINTS + previousScore + nextFrame.getFirstPinsKnockedOver()
+							+ nextFrame.getSecondPinsKnockedOver());
 					continue;
 				}
 
-				if (frame.getSecondRoll().isSpare()) {
-					if (nextFrame.getFirstRoll().isStrike()) {
+				if (frame.isSpare()) {
+					if (nextFrame.isFirstRollStrike()) {
 						frame.setScore(previousScore + ADDITIONAL_POINTS + ADDITIONAL_POINTS);
 						continue;
 					}
 
-					frame.setScore(previousScore + ADDITIONAL_POINTS + nextFrame.getFirstRoll().getPinsKnockedOver());
+					frame.setScore(previousScore + ADDITIONAL_POINTS + nextFrame.getFirstPinsKnockedOver());
 					continue;
 				}
 
-				frame.setScore(previousScore + frame.getFirstRoll().getPinsKnockedOver()
-						+ frame.getSecondRoll().getPinsKnockedOver());
+				frame.setScore(previousScore + frame.getFirstPinsKnockedOver()
+						+ frame.getSecondPinsKnockedOver());
 			}
 		}
 
