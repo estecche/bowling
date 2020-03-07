@@ -133,41 +133,38 @@ public class BowlingApp {
 		for (String playerName : lstLines.keySet()) {
 			Line line = lstLines.get(playerName);
 
-			for (int i = 1; i <= 8; i++) {
+			for (int i = 1; i <= 10; i++) {
 				Frame frame = line.getFrame(i);
 				int previousScore = (i == 1) ? 0 : line.getFrame(i - 1).getScore();
 
-				Frame nextFrame = line.getFrame(i + 1);
-				Frame nextTwoFrames = line.getFrame(i + 2);
-				
 				if (frame.isFirstRollStrike()) {
-					if (isNextFrameStrike(line, frame, i)) {
-						if (isNextTwoFramesStrike(line, frame, i)) {
+					if (line.isNextFrameStrike(frame, i)) {
+						if (line.isNextTwoFramesStrike(frame, i)) {
 							frame.setScore((ADDITIONAL_POINTS * 3) + previousScore);
 							continue;
 						}
-						frame.setScore(ADDITIONAL_POINTS * 2 + nextTwoFrames.getFirstPinsKnockedOver()
+						frame.setScore(ADDITIONAL_POINTS * 2 + line.getNextTwoFramesFirstPinsKnockedOver(frame, i)
 								+ previousScore);
 						continue;
 					}
 
-					if (nextFrame.isSpare()) {
+					if (line.isNextFrameSpare(frame, i)) {
 						frame.setScore((ADDITIONAL_POINTS * 2) + previousScore);
 						continue;
 					}
 
-					frame.setScore(ADDITIONAL_POINTS + previousScore + nextFrame.getFirstPinsKnockedOver()
-							+ nextFrame.getSecondPinsKnockedOver());
+					frame.setScore(ADDITIONAL_POINTS + previousScore + line.getNextFrameFirstPinsKnockedOver(frame, i)
+							+ line.getNextFrameSecondPinsKnockedOver(frame, i));
 					continue;
 				}
 
 				if (frame.isSpare()) {
-					if (nextFrame.isFirstRollStrike()) {
+					if (line.isNextFrameStrike(frame, i)) {
 						frame.setScore(previousScore + ADDITIONAL_POINTS + ADDITIONAL_POINTS);
 						continue;
 					}
 
-					frame.setScore(previousScore + ADDITIONAL_POINTS + nextFrame.getFirstPinsKnockedOver());
+					frame.setScore(previousScore + ADDITIONAL_POINTS + line.getNextFrameFirstPinsKnockedOver(frame, i));
 					continue;
 				}
 
@@ -175,21 +172,6 @@ public class BowlingApp {
 						+ frame.getSecondPinsKnockedOver());
 			}
 		}
-	}
-	
-	private boolean isNextFrameStrike(Line line, Frame frame, int i) {
-		if (frame.getNumber() <= 9) {
-			return line.getFrame(i + 1).isFirstRollStrike();
-		}
-		return ((SpecialFrame) line.getFrame(10)).isSecondRollStrike();
-	}
-	
-	private boolean isNextTwoFramesStrike(Line line, Frame frame, int i) {
-		if (frame.getNumber() <= 8)
-			return ((SpecialFrame) line.getFrame(i + 2)).isFirstRollStrike();
-		if (frame.getNumber() == 9)
-			return ((SpecialFrame) line.getFrame(10)).isSecondRollStrike();
-		return ((SpecialFrame) line.getFrame(10)).isThirdRollStrike();
 	}
 
 	/**
