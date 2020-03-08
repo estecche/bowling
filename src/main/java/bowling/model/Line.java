@@ -34,7 +34,7 @@ public class Line {
 	}
 	
 	public int getNextFrameSecondPinsKnockedOver(Frame frame, int i) {
-		if (frame.getNumber() <= 9)
+		if (frame.getNumber() <= 8)
 			return getFrame(i + 1).getSecondPinsKnockedOver();
 		return ((SpecialFrame) getFrame(10)).getSecondPinsKnockedOver();
 	}
@@ -46,10 +46,15 @@ public class Line {
 	}
 	
 	public boolean isNextFrameStrike(Frame frame, int i) {
+		return isNextFrameStrike(frame, i, false);
+	}
+	
+	public boolean isNextFrameStrike(Frame frame, int i, boolean isSpare) {
 		if (frame.getNumber() <= 9) {
 			return getFrame(i + 1).isFirstRollStrike();
 		}
-		return ((SpecialFrame) getFrame(10)).isSecondRollStrike();
+		SpecialFrame specialFrame = (SpecialFrame) getFrame(10);
+		return (isSpare) ? specialFrame.isThirdRollStrike() : specialFrame.isSecondRollStrike();
 	}
 	
 	public boolean isNextTwoFramesStrike(Frame frame, int i) {
@@ -71,6 +76,6 @@ public class Line {
 	public int getNextFrameFirstPinsKnockedOver(Frame frame, int i) {
 		if (frame.getNumber() <= 9)
 			return getFrame(i + 1).getFirstPinsKnockedOver();
-		return ((SpecialFrame) getFrame(10)).getFirstPinsKnockedOver();
+		return ((SpecialFrame) getFrame(10)).getSecondPinsKnockedOver();
 	}
 }

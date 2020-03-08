@@ -133,9 +133,11 @@ public class BowlingApp {
 		for (String playerName : lstLines.keySet()) {
 			Line line = lstLines.get(playerName);
 
+			int previousScore = 0;
 			for (int i = 1; i <= 10; i++) {
 				Frame frame = line.getFrame(i);
-				int previousScore = (i == 1) ? 0 : line.getFrame(i - 1).getScore();
+				if (i != 1)
+					previousScore = line.getFrame(i - 1).getScore();
 
 				if (frame.isFirstRollStrike()) {
 					if (line.isNextFrameStrike(frame, i)) {
@@ -159,8 +161,13 @@ public class BowlingApp {
 				}
 
 				if (frame.isSpare()) {
-					if (line.isNextFrameStrike(frame, i)) {
-						frame.setScore(previousScore + ADDITIONAL_POINTS + ADDITIONAL_POINTS);
+					if (i != 10) {
+						if (line.isNextFrameStrike(frame, i)) {
+							frame.setScore(previousScore + ADDITIONAL_POINTS + ADDITIONAL_POINTS);
+							continue;
+						}
+					} else {
+						frame.setScore(previousScore + ADDITIONAL_POINTS + line.getNextTwoFramesFirstPinsKnockedOver(frame, i));
 						continue;
 					}
 

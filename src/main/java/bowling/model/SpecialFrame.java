@@ -42,7 +42,7 @@ public class SpecialFrame extends Frame {
 	/**
 	 * Method that finds if the second roll was a strike or not.
 	 * 
-	 * @return if the third roll was a strike or not.
+	 * @return if the second roll was a strike or not.
 	 */
 	public boolean isSecondRollStrike() {
 		return rolls.get(2).isStrike();
