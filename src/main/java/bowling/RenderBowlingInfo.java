@@ -18,9 +18,11 @@ public class RenderBowlingInfo {
 	/**
 	 * This defines the separator to be used when printing the scores.
 	 */
-	private final String SEPARATOR = "  |  ";
+	private final String SEPARATOR = "\t";
 
 	private final String DOUBLE_SEPARATOR = SEPARATOR + SEPARATOR;
+	
+	private final String STRIKE_CHARACTER = "X";
 
 	private Logger logger = LogManager.getLogger(RenderBowlingInfo.class);
 
@@ -47,7 +49,7 @@ public class RenderBowlingInfo {
 	}
 
 	private String getStrikeLine() {
-		return SEPARATOR + "X" + SEPARATOR;
+		return SEPARATOR + STRIKE_CHARACTER + SEPARATOR;
 	}
 
 	/**
@@ -66,7 +68,7 @@ public class RenderBowlingInfo {
 			String frameInfo = "Pinfalls" + SEPARATOR;
 			String scoreInfo = "Score" + SEPARATOR;
 
-			for (int i = 1; i <= 10; i++) {
+			for (int i = 1; i <= 9; i++) {
 				Frame frame = line.getFrame(i);
 				if (frame == null)
 					break;
@@ -78,32 +80,31 @@ public class RenderBowlingInfo {
 				} else {
 					frameInfo += getFullLine(frame.getFirstPinsKnockedOver(), frame.getSecondPinsKnockedOver());
 				}
-				scoreInfo += frame.getScore() + SEPARATOR + (frame.isFirstRollStrike() ? "" : SEPARATOR);
+				scoreInfo += frame.getScore() + DOUBLE_SEPARATOR;
 			}
 
 			SpecialFrame frame = (SpecialFrame) line.getFrame(10);
 			if (frame.isFirstRollStrike()) {
-				frameInfo += getStrikeLine();
+				frameInfo += STRIKE_CHARACTER + SEPARATOR;
 				if (frame.isSecondRollStrike()) {
-					frameInfo += getStrikeLine();
+					frameInfo += STRIKE_CHARACTER + SEPARATOR;
 					if (frame.isThirdRollStrike()) {
-						frameInfo += getStrikeLine();
+						frameInfo += STRIKE_CHARACTER + SEPARATOR;
 					} else {
-						frameInfo += SEPARATOR + frame.getThirdPinsKnockedOver();
+						frameInfo += frame.getThirdPinsKnockedOver();
 					}
 				} else if (frame.isSpare()) {
 					frameInfo += getSpareLine(frame.getSecondPinsKnockedOver());
 				} else {
 					frameInfo += getFullLine(frame.getSecondPinsKnockedOver(), frame.getThirdPinsKnockedOver());
 				}
+			} else if (frame.isSpare()) {
+				frameInfo += getSpareLine(frame.getFirstPinsKnockedOver());
+				frameInfo += SEPARATOR + frame.getThirdPinsKnockedOver();
 			} else {
-				if (frame.isSpare()) {
-					frameInfo += frame.getFirstPinsKnockedOver() + SEPARATOR + "/" + SEPARATOR;
-					frameInfo += SEPARATOR + frame.getThirdPinsKnockedOver();
-				} else {
-					frameInfo += getFullLine(frame.getFirstPinsKnockedOver(), frame.getSecondPinsKnockedOver());
-				}
+				frameInfo += getFullLine(frame.getFirstPinsKnockedOver(), frame.getSecondPinsKnockedOver());
 			}
+			scoreInfo += frame.getScore();
 
 			lstScores.add(frameInfo);
 			lstScores.add(scoreInfo);
