@@ -15,7 +15,9 @@ public enum ErrorCodes {
 	
 	WRONG_INFO_LOADED (5, "There is an error with the data loaded! Please check the data a run the program again!"),
 	
-	MORE_DATA_EXPECTED (6, "There is less data than the expected! Please check the data source!");
+	MORE_DATA_EXPECTED (6, "There is less data than the expected! Please check the data source!"),
+	
+	ERROR_PROCESSING_FILE (7, "There was an error while processing the file!");
 	
 	private int code;
 	

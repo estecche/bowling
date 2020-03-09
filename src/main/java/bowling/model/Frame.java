@@ -70,11 +70,11 @@ public class Frame {
 	public int getScore() {
 		return score;
 	}
-	
+
 	public boolean firstRollExists() {
 		return (rolls.get(1) != null);
 	}
-	
+
 	public boolean secondRollExists() {
 		return (rolls.get(2) != null);
 	}
@@ -82,15 +82,15 @@ public class Frame {
 	public boolean isFirstRollStrike() {
 		return rolls.get(1).isStrike();
 	}
-	
+
 	public int getFirstPinsKnockedOver() {
 		return rolls.get(1).getPinsKnockedOver();
 	}
-	
+
 	public int getSecondPinsKnockedOver() {
 		return rolls.get(2).getPinsKnockedOver();
 	}
-	
+
 	public boolean isSpare() {
 		return spare;
 	}
@@ -100,8 +100,11 @@ public class Frame {
 	}
 
 	void setSpare(int previousRollNumber, int pinsKnockedOver) {
-		spare = (rolls.get(previousRollNumber).getPinsKnockedOver() + pinsKnockedOver) == BowlingApp.NUMBER_OF_PINS
-				? true
-				: false;
+		if (rolls.get(previousRollNumber) == null)
+			spare = false;
+		else
+			spare = (rolls.get(previousRollNumber).getPinsKnockedOver() + pinsKnockedOver) == BowlingApp.NUMBER_OF_PINS
+					? true
+					: false;
 	}
 }
