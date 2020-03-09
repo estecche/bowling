@@ -67,7 +67,7 @@ public class BowlingApp {
 	private void createFrame(int frameNumber, Line line, SingleLineData singleLineData) {
 		Frame frame = (frameNumber == BowlingApp.NUMBER_OF_FRAMES) ? new SpecialFrame() : new Frame(frameNumber);
 		line.addFrame(frame);
-		frame.addFirstRollPins(singleLineData.getPinsKnockedOver());
+		frame.addFirstRoll(singleLineData.getPinsKnockedOver());
 	}
 
 	/**
@@ -105,13 +105,12 @@ public class BowlingApp {
 			Frame frame = line.getFrame(frameNumber);
 
 			if (frame != null && frameNumber == BowlingApp.NUMBER_OF_FRAMES) {
-				if (frame.getSecondRoll() != null
-						&& (frame.getFirstRoll().isStrike() || frame.getSecondRoll().isSpare())) {
+				if (frame.secondRollExists() && (frame.isFirstRollStrike() || frame.isSpare())) {
 					((SpecialFrame) frame).addThirdRoll(singleLineData.getPinsKnockedOver());
 					continue;
 				}
-			} else if (frame != null && ((frame.getFirstRoll() != null && frame.getFirstRoll().isStrike())
-					|| (frame.getFirstRoll() != null && frame.getSecondRoll() != null))) {
+			} else if (frame != null && ((frame.firstRollExists() && frame.isFirstRollStrike())
+					|| (frame.firstRollExists() && frame.secondRollExists()))) {
 				frameNumber++;
 				frame = line.getFrame(frameNumber);
 			}
@@ -121,8 +120,8 @@ public class BowlingApp {
 				continue;
 			}
 
-			if (frame.getSecondRoll() == null)
-				frame.addSecondRollPins(singleLineData.getPinsKnockedOver());
+			if (!frame.secondRollExists())
+				frame.addSecondRoll(singleLineData.getPinsKnockedOver());
 		}
 		return true;
 	}
@@ -134,49 +133,52 @@ public class BowlingApp {
 		for (String playerName : lstLines.keySet()) {
 			Line line = lstLines.get(playerName);
 
-			for (int i = 1; i <= 8; i++) {
+			int previousScore = 0;
+			for (int i = 1; i <= 10; i++) {
 				Frame frame = line.getFrame(i);
-				int previousScore = (i == 1) ? 0 : line.getFrame(i - 1).getScore();
+				if (i != 1)
+					previousScore = line.getFrame(i - 1).getScore();
 
-				Frame nextFrame = line.getFrame(i + 1);
-				Frame nextTwoFrames = line.getFrame(i + 2);
-				
-				if (frame.getFirstRoll().isStrike()) {
-					if (nextFrame.getFirstRoll().isStrike()) {
-						if (nextTwoFrames.getFirstRoll().isStrike()) {
+				if (frame.isFirstRollStrike()) {
+					if (line.isNextFrameStrike(frame, i)) {
+						if (line.isNextTwoFramesStrike(frame, i)) {
 							frame.setScore((ADDITIONAL_POINTS * 3) + previousScore);
 							continue;
 						}
-						frame.setScore(ADDITIONAL_POINTS * 2 + nextTwoFrames.getFirstRoll().getPinsKnockedOver()
+						frame.setScore(ADDITIONAL_POINTS * 2 + line.getNextTwoFramesFirstPinsKnockedOver(frame, i)
 								+ previousScore);
 						continue;
 					}
 
-					if (nextFrame.getSecondRoll().isSpare()) {
+					if (line.isNextFrameSpare(frame, i)) {
 						frame.setScore((ADDITIONAL_POINTS * 2) + previousScore);
 						continue;
 					}
 
-					frame.setScore(ADDITIONAL_POINTS + previousScore + nextFrame.getFirstRoll().getPinsKnockedOver()
-							+ nextFrame.getSecondRoll().getPinsKnockedOver());
+					frame.setScore(ADDITIONAL_POINTS + previousScore + line.getNextFrameFirstPinsKnockedOver(frame, i)
+							+ line.getNextFrameSecondPinsKnockedOver(frame, i));
 					continue;
 				}
 
-				if (frame.getSecondRoll().isSpare()) {
-					if (nextFrame.getFirstRoll().isStrike()) {
-						frame.setScore(previousScore + ADDITIONAL_POINTS + ADDITIONAL_POINTS);
+				if (frame.isSpare()) {
+					if (i != 10) {
+						if (line.isNextFrameStrike(frame, i)) {
+							frame.setScore(previousScore + ADDITIONAL_POINTS + ADDITIONAL_POINTS);
+							continue;
+						}
+					} else {
+						frame.setScore(previousScore + ADDITIONAL_POINTS + line.getNextTwoFramesFirstPinsKnockedOver(frame, i));
 						continue;
 					}
 
-					frame.setScore(previousScore + ADDITIONAL_POINTS + nextFrame.getFirstRoll().getPinsKnockedOver());
+					frame.setScore(previousScore + ADDITIONAL_POINTS + line.getNextFrameFirstPinsKnockedOver(frame, i));
 					continue;
 				}
 
-				frame.setScore(previousScore + frame.getFirstRoll().getPinsKnockedOver()
-						+ frame.getSecondRoll().getPinsKnockedOver());
+				frame.setScore(previousScore + frame.getFirstPinsKnockedOver()
+						+ frame.getSecondPinsKnockedOver());
 			}
 		}
-
 	}
 
 	/**

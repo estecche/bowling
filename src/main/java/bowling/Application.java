@@ -24,6 +24,10 @@ public class Application {
 		logger.warn("### Initiating the application... reading the file {}", args[0]);
 		
 		ProcessStream processStream = new ProcessStream(args[0]);
+		if (!processStream.readFile()) {
+			logger.error(ErrorCodes.ERROR_PROCESSING_FILE.getMessage());
+			System.exit(1);
+		}
 		
 		BowlingApp bowlingApp = new BowlingApp(processStream.extractData());
 		if (bowlingApp.generateScoringTable()) {
