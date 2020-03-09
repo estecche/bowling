@@ -17,7 +17,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
+import bowling.BowlingApp;
 import bowling.source.ScoresDataSource;
+import bowling.source.SingleLineData;
 
 @RunWith(JUnit4.class)
 public class ProcessStreamTest {
@@ -79,12 +81,17 @@ public class ProcessStreamTest {
 	@Test
 	public void testCreateNewDS_invalidPlayer() {
 		String line = "Player1 | 10";
+		String wrongLine = "";
 		ScoresDataSource scoresDS = new ScoresDataSource();
 		
 		ProcessStream testClass = new ProcessStream("");
 		testClass.createNewDS(line, scoresDS);
+		testClass.createNewDS(wrongLine, scoresDS);
 		
-		assertThat(scoresDS.getLstScores().size(), Is.is(0));
+		assertThat(scoresDS.getLstScores().size(), Is.is(1));
+		SingleLineData singleLine = scoresDS.getLstScores().get(0);
+		assertThat(singleLine, IsNull.notNullValue());
+		assertThat(singleLine.getPlayerName(), Is.is("INVALID PLAYER"));
 	}
 	
 	@Test
