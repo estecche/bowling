@@ -82,16 +82,23 @@ public class ProcessStreamTest {
 	public void testCreateNewDS_invalidPlayer() {
 		String line = "Player1 | 10";
 		String wrongLine = "";
+		String wrongPins = "Player	a";
 		ScoresDataSource scoresDS = new ScoresDataSource();
 		
 		ProcessStream testClass = new ProcessStream("");
 		testClass.createNewDS(line, scoresDS);
 		testClass.createNewDS(wrongLine, scoresDS);
+		testClass.createNewDS(wrongPins, scoresDS);
 		
-		assertThat(scoresDS.getLstScores().size(), Is.is(1));
+		assertThat(scoresDS.getLstScores().size(), Is.is(2));
+		
 		SingleLineData singleLine = scoresDS.getLstScores().get(0);
 		assertThat(singleLine, IsNull.notNullValue());
 		assertThat(singleLine.getPlayerName(), Is.is("INVALID PLAYER"));
+		assertThat(singleLine.isValidInfo(), Is.is(false));
+		
+		SingleLineData singleLineWrongPins = scoresDS.getLstScores().get(1);
+		assertThat(singleLineWrongPins.isValidInfo(), Is.is(false));
 	}
 	
 	@Test
