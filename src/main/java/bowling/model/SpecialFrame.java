@@ -49,7 +49,7 @@ public class SpecialFrame extends Frame {
 	}
 	
 	public boolean isThirdRollStrike() {
-		return rolls.get(3).isStrike();
+		return rolls.get(3) == null ? false : rolls.get(3).isStrike();
 	}
 	
 	public int getThirdPinsKnockedOver() {

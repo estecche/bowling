@@ -18,7 +18,7 @@ public class RenderBowlingInfo {
 	/**
 	 * This defines the separator to be used when printing the scores.
 	 */
-	private final String SEPARATOR = "\t";
+	private final String SEPARATOR = "     ";
 
 	private final String DOUBLE_SEPARATOR = SEPARATOR + SEPARATOR;
 	

@@ -68,8 +68,9 @@ public class Line {
 	public int getNextTwoFramesFirstPinsKnockedOver(Frame frame, int i) {
 		if (frame.getNumber() <= 8)
 			return getFrame(i + 2).getFirstPinsKnockedOver();
-		if (frame.getNumber() == 9)
-			return ((SpecialFrame) frame).getSecondPinsKnockedOver();
+		if (frame.getNumber() == 9) {
+			return ((SpecialFrame) getFrame(i + 1)).getSecondPinsKnockedOver();
+		}
 		return ((SpecialFrame) frame).getThirdPinsKnockedOver();
 	}
 	
